@@ -6,7 +6,20 @@ import { movies } from './data.js';
 import { halls } from './data.js';
 import { logins } from './data.js';
 
+import { mongoose } from 'mongoose';
+import { Hall } from './models/hall.js';
+
+const db = 'mongodb+srv://Olesya:test123@cluster0.ru1wimx.mongodb.net/node-blog?retryWrites=true&w=majority&appName=Cluster0';
+
+mongoose
+.connect(db)
+.then((res) => console.log('Connect to DB'))
+.catch((error) => console.log(error));
+
+
 let nextId = 2;
+
+let ticket = {};
 
 const app = express();
 
@@ -28,34 +41,43 @@ app.get("/movies", (req, res) => {
 });
 
 app.get("/halls", (req, res) => {
-  res.send(JSON.stringify(halls));
+  Hall
+  .find()
+  .then((halls) => {
+    res
+    .status(200)
+    .json(halls);
+  })
+  .catch(() => handleError(res, "Something goes wrong..."));
+  // res.send(JSON.stringify(halls));
 });
 
-
-app.post("/halls", (req, res) => {
-  nextId++;
-  let newHall = {
-    id: 0,
-    rows: 10,
-    seats: 8,
-    places: [
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
-      ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],      
-    ],
-    prices: { standart: 100, vip: 200 },
-  };
-  newHall.id = nextId;
-  halls.push(newHall);
-  res.status(204);
-  res.end();
+app.post("/halls", (req, res) => {  
+  let id = 0;
+  let rows = 10;
+  let seats = 8;
+  let places = [
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],
+    ["disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled", "disabled"],      
+  ];
+  let prices = { standart: 100, vip: 200 };
+  nextId++; 
+  const hall = new Hall({id, rows, seats, places, prices});
+  hall.id = nextId;
+  hall
+  .save()
+  .then((result) => res.send(result))
+  .catch((error) => {
+    console.log(error);
+  })  
 });
 
 app.put("/logins", (req, res) => {
@@ -74,14 +96,24 @@ app.put("/logins", (req, res) => {
 
 app.put("/halls/:id", (req, res) => {
   const hallId = Number(req.body.id + 1);
-  halls.forEach((item) => {
-    if (item.id === hallId) {
-      item.prices.standart = Number(req.body.standart);
-      item.prices.vip = Number(req.body.vip);
-    }
-  });
-  console.log(halls);
-  res.status(204).end();
+  console.log(hallId);
+  Hall
+  .findById(hallId)
+  .then((hall) => {
+    res
+    .status(200)
+    .json(hall)
+  })
+  .catch(() => handleError(res, "Something goes wrong..."));
+  // const hallId = Number(req.body.id + 1);
+  // halls.forEach((item) => {
+  //   if (item.id === hallId) {
+  //     item.prices.standart = Number(req.body.standart);
+  //     item.prices.vip = Number(req.body.vip);
+  //   }
+  // });
+  // console.log(halls);
+  // res.status(204).end();
 });
 
 app.put("/places/:id", (req, res) => {
@@ -132,9 +164,38 @@ app.delete("/halls/:id", (req, res) => {
   res.end();
 });
 
+app.post("/ticket", (req, res) => {
+  ticket.title = req.body.title;
+  ticket.seances = req.body.seances;
+  ticket.hall = req.body.hall;
+  console.log(ticket);
+  res.status(204);
+  res.end();
+});
+
+app.get("/ticket", (req, res) => {
+  res.send(JSON.stringify(ticket));
+});
+
+
 const port = process.env.PORT || 7070;
 app.listen(port, () =>
   console.log(`The server is running on http://localhost:${port}`)
 );
 
-// console.log(posts);
+
+// const MongoDBclient = new MongoClient('mongodb://Timeweb:cloud@127.0.0.1:27017/?authMechanism=DEFAULT');
+
+
+// const connect = async () =>{
+//    try {
+//        await MongoDBclient.connect();
+//        console.log("Успешно подключились к базе данных");
+//        await MongoDBclient.close();
+//        console.log("Закрыли подключение");
+//    } catch (e) {
+//        console.log(e);
+//    }
+// }
+
+// connect();

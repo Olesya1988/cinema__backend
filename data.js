@@ -7,7 +7,7 @@ export const movies = [
     img: "",
     duration: "130 минут",
     origin: "США",
-    date: "2.04",
+    date: "27.04",
     seances: [
       {
         hall: 1,
@@ -26,7 +26,7 @@ export const movies = [
     img: "",
     duration: "130 минут",
     origin: "США",
-    date: "3.04",
+    date: "28.04",
     seances: [
       {
         hall: 1,
@@ -45,7 +45,7 @@ export const movies = [
     img: "",
     duration: "130 минут",
     origin: "США",
-    date: "4.04",
+    date: "1.05",
     seances: [
       {
         hall: 1,
@@ -64,7 +64,7 @@ export const movies = [
     img: "",
     duration: "130 минут",
     origin: "США",
-    date: "5.04",
+    date: "2.05",
     seances: [
       {
         hall: 1,
@@ -83,7 +83,7 @@ export const movies = [
     img: "",
     duration: "130 минут",
     origin: "США",
-    date: "6.04",
+    date: "3.05",
     seances: [
       {
         hall: 1,
@@ -102,7 +102,7 @@ export const movies = [
     img: "",
     duration: "130 минут",
     origin: "США",
-    date: "7.04",
+    date: "4.05",
     seances: [
       {
         hall: 1,
@@ -121,7 +121,7 @@ export const movies = [
     img: "",
     duration: "130 минут",
     origin: "США",
-    date: "8.04",
+    date: "5.05",
     seances: [
       {
         hall: 1,
@@ -140,7 +140,7 @@ export const movies = [
     img: "",
     duration: "130 минут",
     origin: "США",
-    date: "8.04",
+    date: "5.05",
     seances: [
       {
         hall: 1,
