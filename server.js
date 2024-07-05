@@ -98,113 +98,24 @@ app.post("/halls", (req, res) => {
   let rows = 10;
   let seats = 8;
   let places = [
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-    [
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-      "disabled",
-    ],
-  ];
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],
+    ["standart", "standart", "standart", "standart", "standart", "standart", "standart", "standart"],      
+  ]; 
   let prices = { standart: 100, vip: 200 };
 
   Hall.find().then((hallArr) => {
     id = hallArr.length + 1;
 
     const hall = new Hall({ id, rows, seats, places, prices });
+   
     hall
       .save()
       .then((result) => res.send(result))
@@ -255,41 +166,45 @@ app.put("/prices/:id", (req, res) => {
 });
 
 app.put("/places/:id", (req, res) => {
-  const hallId = Number(req.body.id + 1);
+  const hallId = Number(req.body.id + 1);  
 
   Hall.findOneAndUpdate(
     { id: hallId },
-    { $set: { rows: req.body.rows, seats: req.body.seats } }
+    { $set: { rows: req.body.rows, seats: req.body.seats, places: req.body.updatedPlaces } }
   )
-    .then((hall) => {
-      let difRow = req.body.rows - hall.places.length;
+  .then(() => {
+    res.status(200).json();
+  })
+    // .then((hall) => {
+    //   let difRow = req.body.rows - hall.places.length;
 
-      let difSeat = req.body.seats - hall.places[0].length;
+    //   let difSeat = req.body.seats - hall.places[0].length;
 
-      if (difRow > 0) {
-        for (let i = 0; i < difRow; i++) {
-          hall.places.push([...hall.places[hall.places.length - 1]]);
-        }
-      } else if (difRow < 0) {
-        hall.places.splice(req.body.rows);
-      }
+    //   if (difRow > 0) {
+    //     for (let i = 0; i < difRow; i++) {
+    //       hall.places.push([...hall.places[hall.places.length - 1]]);
+    //     }
+    //   } else if (difRow < 0) {
+    //     hall.places.splice(req.body.rows);
+    //   }
 
-      if (difSeat > 0) {
-        hall.places.forEach((place) => {
-          for (let i = 0; i < difSeat; i++) {
-            place.push("disabled");
-          }
-        });
-      } else if (difSeat < 0) {
-        hall.places.forEach((place) => {
-          place.splice(req.body.seats);
-        });
-      }
+    //   if (difSeat > 0) {
+    //     hall.places.forEach((place) => {
+    //       for (let i = 0; i < difSeat; i++) {
+    //         place.push(..."standart");
+    //       }
+    //     });
+    //   } else if (difSeat < 0) {
+    //     hall.places.forEach((place) => {
+    //       place.splice(req.body.seats);
+    //     });
+    //   }
 
-      hall.save().then(() => {
-        res.status(200).json(hall);
-      });
-    })
+    //   hall.save().then(() => {
+    //     console.log(hall);
+    //     res.status(200).json(hall);
+    //   });
+    // })
     .catch(() => handleError(res, "Something goes wrong..."));
 });
 
@@ -313,7 +228,7 @@ app.post("/ticket", (req, res) => {
   let places = req.body.places;
 
   Ticket.find().then(() => {
-    const ticket = new Ticket({ id, title, date, time, hall, places });
+    const ticket = new Ticket({ id, title, date, time, hall, places }); 
 
     ticket
       .save()
